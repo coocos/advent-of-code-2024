@@ -2,7 +2,6 @@ from typing import Iterable
 
 
 def read_input() -> list[list[int]]:
-    """Read and parse input from input.txt"""
     reports = []
     with open("input.txt") as f:
         for line in f.readlines():
@@ -28,12 +27,10 @@ def variations(report: list[int]) -> Iterable[list[int]]:
 
 
 def part1(reports: list[list[int]]) -> int:
-    """Solve part 1 of the puzzle"""
     return sum(1 for report in reports if is_safe(report))
 
 
 def part2(reports: list[list[int]]) -> int:
-    """Solve part 2 of the puzzle"""
     return sum(
         1
         for report in reports
@@ -42,7 +39,6 @@ def part2(reports: list[list[int]]) -> int:
 
 
 def solve() -> None:
-    """Solve both parts of the puzzle"""
     data = read_input()
 
     result1 = part1(data)
