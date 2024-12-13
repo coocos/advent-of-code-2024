@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Generator, Iterable
+from typing import Generator
 
 
 @dataclass(frozen=True)
@@ -38,33 +38,63 @@ def turn() -> Generator[Vector, None, None]:
         yield Vector(-1, 0)
 
 
-def part1(grid: Grid, pos: Vector) -> int:
-    visited: set[Vector] = set()
+def part1(grid: Grid, guard: Vector) -> set[Vector]:
+    path: set[Vector] = set()
     next_direction = turn()
     direction = next(next_direction)
-    while pos in grid:
-        visited.add(pos)
-        next_pos = pos + direction
-        if next_pos not in grid:
+    while guard in grid:
+        path.add(guard)
+        next_position = guard + direction
+        if next_position not in grid:
             break
-        if grid[next_pos] == "#":
+        if grid[next_position] == "#":
             direction = next(next_direction)
         else:
-            pos = next_pos
-    return len(visited)
+            guard = next_position
+    return path
 
 
-def part2(grid: Grid, guard: Vector) -> int:
-    return 0
+def part2(
+    grid: Grid,
+    guard: Vector,
+    original_path: set[Vector],
+) -> int:
+    loops = 0
+
+    for possible_position in grid:
+        if (
+            grid[possible_position] != "."
+            or possible_position not in original_path
+            or possible_position == guard
+        ):
+            continue
+
+        path: set[tuple[Vector, Vector]] = set()
+        next_direction = turn()
+        direction = next(next_direction)
+        position = guard
+        while position in grid:
+            if (position, direction) in path:
+                loops += 1
+                break
+            path.add((position, direction))
+            next_position = position + direction
+            if next_position not in grid:
+                break
+            if grid[next_position] == "#" or next_position == possible_position:
+                direction = next(next_direction)
+            else:
+                position = next_position
+    return loops
 
 
 def solve() -> None:
     grid, guard = read_input()
 
-    result1 = part1(grid, guard)
-    print(f"Part 1: {result1}")
+    visited = part1(grid, guard)
+    print(f"Part 1: {len(visited)}")
 
-    result2 = part2(grid, guard)
+    result2 = part2(grid, guard, visited)
     print(f"Part 2: {result2}")
 
 
