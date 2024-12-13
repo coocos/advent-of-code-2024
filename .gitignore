@@ -1,5 +1,3 @@
-# Ignore all input.txt files
 **/input.txt
 
-# But keep the template input.txt
 !template/input.txt
